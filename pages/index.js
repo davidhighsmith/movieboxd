@@ -1,8 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
+import styles from '@/styles/Home.module.scss';
+import Movie from '@/models/Movie';
 
-export default function Home() {
+const Home = ({movies}) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -15,6 +17,18 @@ export default function Home() {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+
+        {
+          movies.map(movie => (
+            <div key={movie._id}>
+              <h1>{movie.title} {movie.year}</h1>
+            </div>
+          ))
+        }
+
+        {/* <Link href="/movie/123">
+          <a>{movieValues.title} ({movieValues.year})</a>
+        </Link> */}
 
         <p className={styles.description}>
           Get started by editing{' '}
@@ -67,3 +81,16 @@ export default function Home() {
     </div>
   )
 }
+
+export async function getServerSideProps() {
+  const movies = await Movie.find();
+  const insertedMovie = await Movie.insertOne({
+    title: '',
+    year: 2020
+  });
+  console.log(insertedMovie);
+
+  return { props: { movies: movies } }
+}
+
+export default Home;
