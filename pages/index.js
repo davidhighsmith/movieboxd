@@ -86,7 +86,8 @@ export async function getServerSideProps() {
   const movies = await Movie.find();
   const insertedMovie = await Movie.insertOne({
     title: '',
-    year: 2020
+    year: 2013,
+    poster_path: '/poster/path',
   });
   console.log(insertedMovie);
 

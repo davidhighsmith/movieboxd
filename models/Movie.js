@@ -1,7 +1,29 @@
 import BaseModel, { checkProperty } from "@/models/_base";
 
-const properties = {
-  title: 'title',
+const schema = {
+  overview: {
+    name: 'overview',
+    type: 'string',
+    nullable: true,
+  },
+  poster_path: {
+    name: 'poster_path',
+    type: 'string',
+    nullable: true,
+  },
+  release_date: {
+    name: 'release_date',
+    type: 'string',
+  },
+  runtime: {
+    name: 'runtime',
+    type: 'number',
+    nullable: true,
+  },
+  title: {
+    name: 'title',
+    type: 'string',
+  },
 }
 
 class Movie extends BaseModel {
@@ -17,7 +39,10 @@ class Movie extends BaseModel {
     }
 
     // Title
-    checkProperty(validObj, movie, { name: properties.title, type: 'string' });
+    checkProperty(validObj, movie, schema.title);
+
+    // Poster path
+    checkProperty(validObj, movie, schema.poster_path);
 
     return validObj;
   }

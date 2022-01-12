@@ -4,19 +4,26 @@ import getDbInstance from "@/lib/getDbInstance";
 // needs to have the most important error at the top
 // will return on the first error it encounters for the property
 // TODO: Will need some sort of settings object for more complex checks
-export const checkProperty = (validObj, obj, property) => {
+export const checkProperty = (validObj, obj, schema) => {
   // base checks that any type will need to pass
-  if (!obj.hasOwnProperty(property.name)) {
-    pushErrorProperty(validObj, property.name);
-    return;
-  }
-  if (typeof(obj[property.name]) !== property.type) {
-    pushErrorType(validObj, property.name, property.type);
+  // must have all properties in the schema
+  if (!obj.hasOwnProperty(schema.name)) {
+    pushErrorProperty(validObj, schema.name);
     return;
   }
 
-  if (property.type === 'string') {
-    if (obj[property.name].trim() === '') pushErrorEmpty(validObj, property.name);
+  // if property is nullable and the value is null no further checks are needed
+  if (schema.nullable && obj[schema.name] === null) return;
+
+  // checks to make sure the type of the propert is correct
+  if (typeof(obj[schema.name]) !== schema.type) {
+    pushErrorType(validObj, schema.name, schema.type);
+    return;
+  }
+
+  // specific checks
+  if (schema.type === 'string') {
+    if (obj[schema.name].trim() === '') pushErrorEmpty(validObj, schema.name);
     return;
   }
 }
