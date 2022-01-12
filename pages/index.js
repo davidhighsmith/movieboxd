@@ -7,6 +7,8 @@ import styles from '@/styles/Home.module.scss';
 import { baseImage } from '@/utils/theMovieDBBaseURL';
 import Movie from '@/models/Movie';
 
+import Login from '@/components/Login';
+
 const Home = ({movies}) => {
   const [id, setId] = useState(646380);
 
@@ -31,6 +33,8 @@ const Home = ({movies}) => {
         {/* <Link href="/movie/123">
           <a>{movieValues.title} ({movieValues.year})</a>
         </Link> */}
+
+        <Login />
 
         <div className={styles.scrollable_outer}>
           <div className={styles.scrollable}>
