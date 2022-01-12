@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -5,6 +6,13 @@ import styles from '@/styles/Home.module.scss';
 import Movie from '@/models/Movie';
 
 const Home = ({movies}) => {
+  const [id, setId] = useState(646380);
+
+  const findMovie = async () => {
+    const movie = await fetch(`/api/movies/${id}`);
+    console.log(await movie.json());
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -17,6 +25,10 @@ const Home = ({movies}) => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+
+        <span>Find movie with ID:</span>
+        <input onChange={(e) => setId(e.target.value)} type="number" value={id} />
+        <button onClick={findMovie}>Find Movie</button>
 
         {
           movies.map(movie => (
@@ -84,12 +96,6 @@ const Home = ({movies}) => {
 
 export async function getServerSideProps() {
   const movies = await Movie.find();
-  const insertedMovie = await Movie.insertOne({
-    title: '',
-    year: 2013,
-    poster_path: '/poster/path',
-  });
-  console.log(insertedMovie);
 
   return { props: { movies: movies } }
 }

@@ -1,6 +1,12 @@
 import BaseModel, { checkProperty } from "@/models/_base";
+import getDbInstance from "@/lib/getDbInstance";
 
 const schema = {
+  backdrop_path: {
+    name: 'backdrop_path',
+    type: 'string',
+    nullable: true,
+  },
   overview: {
     name: 'overview',
     type: 'string',
@@ -29,6 +35,22 @@ const schema = {
 class Movie extends BaseModel {
   static collectionName = 'movies'
 
+  constructor(movie) {
+    super();
+    Object.keys(schema).forEach(key => {
+      this[key] = movie[key];
+    });
+  }
+
+  async save() {
+    const db = await getDbInstance();
+    await db.collection(Movie.collectionName).insertOne(this);
+    const movieInserted = {
+      ...this,
+    }
+    return movieInserted;
+  }
+
   // checks all the items in the object that was passed in
   // ensures that a movie is created only when valid
   // not sure if this should be in or out of class
@@ -38,25 +60,24 @@ class Movie extends BaseModel {
       errors: [],
     }
 
-    // Title
-    checkProperty(validObj, movie, schema.title);
-
-    // Poster path
-    checkProperty(validObj, movie, schema.poster_path);
+    // Checks every property in the schema
+    Object.keys(schema).forEach(key => {
+      checkProperty(validObj, movie, schema[key]);
+    });
 
     return validObj;
   }
 
-  /////////////////////// database methods go below this comment ///////////////////////
+  /////////////////////// static database methods go below this comment ///////////////////////
 
   // gets all movies
   static async find(params = {}) {
     return await super.find(this.collectionName, params);
   }
 
-  // inserts one movie
+  // inserts one movie that has been manually made
   static async insertOne(movie) {
-    const { valid, errors} = this.checkValidMovie(movie);
+    const { valid, errors } = this.checkValidMovie(movie);
 
     // return errors if movie object isn't valid
     if (!valid) return {
