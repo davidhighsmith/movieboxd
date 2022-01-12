@@ -2,7 +2,9 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import dateFormat from 'dateformat';
 import styles from '@/styles/Home.module.scss';
+import { baseImage } from '@/utils/theMovieDBBaseURL';
 import Movie from '@/models/Movie';
 
 const Home = ({movies}) => {
@@ -26,17 +28,21 @@ const Home = ({movies}) => {
         <input onChange={(e) => setId(e.target.value)} type="number" value={id} />
         <button onClick={findMovie}>Find Movie</button>
 
-        {
-          movies.map(movie => (
-            <div key={movie._id}>
-              <h1>{movie.title} {movie.year}</h1>
-            </div>
-          ))
-        }
-
         {/* <Link href="/movie/123">
           <a>{movieValues.title} ({movieValues.year})</a>
         </Link> */}
+
+        <div className={styles.scrollable_outer}>
+          <div className={styles.scrollable}>
+            {
+              movies.map(movie => (
+                <div className={styles.movie} key={movie._id}>
+                  <Image src={`${baseImage}${movie.poster_path}`} width={500} height={750} />
+                </div>
+              ))
+            }
+          </div>
+        </div>
 
       </main>
     </div>
