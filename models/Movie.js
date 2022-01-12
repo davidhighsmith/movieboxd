@@ -7,6 +7,10 @@ const schema = {
     type: 'string',
     nullable: true,
   },
+  moviedb_id: {
+    name: 'moviedb_id',
+    type: 'number',
+  },
   overview: {
     name: 'overview',
     type: 'string',
@@ -38,7 +42,8 @@ class Movie extends BaseModel {
   constructor(movie) {
     super();
     Object.keys(schema).forEach(key => {
-      this[key] = movie[key];
+      if (key !== 'moviedb_id') this[key] = movie[key];
+      else this['moviedb_id'] = movie.id;
     });
   }
 
